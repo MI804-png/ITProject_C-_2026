@@ -160,6 +160,50 @@ public class TicketsIntegrationTests : IClassFixture<TestWebApplicationFactory>
         Assert.Contains("Only png, jpg, jpeg, webp, and gif screenshots are allowed.", html, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task HomeAssistant_ReturnsGuidance_ForSelectedTicket()
+    {
+        using var client = CreateAuthenticatedClient("staff-user-3", "Admin,Technician");
+
+        var createGet = await client.GetAsync("/Tickets/Create");
+        var createToken = await ExtractAntiForgeryTokenAsync(createGet);
+
+        var createResponse = await client.PostAsync(
+            "/Tickets/Create",
+            new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["__RequestVerificationToken"] = createToken,
+                ["Title"] = "VPN connection is failing",
+                ["Description"] = "User cannot connect to VPN after password reset.",
+                ["Priority"] = "4",
+                ["DueAtUtc"] = ""
+            }));
+
+        Assert.Equal(HttpStatusCode.Redirect, createResponse.StatusCode);
+        var detailsPath = createResponse.Headers.Location!.ToString();
+        var idMatch = Regex.Match(detailsPath, @"(\d+)");
+        Assert.True(idMatch.Success);
+        var ticketId = idMatch.Groups[1].Value;
+
+        var homeGet = await client.GetAsync("/");
+        var homeToken = await ExtractAntiForgeryTokenAsync(homeGet);
+
+        var assistantResponse = await client.PostAsync(
+            "/Home/AskAssistant",
+            new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                ["__RequestVerificationToken"] = homeToken,
+                ["ticketId"] = ticketId
+            }));
+
+        var html = await assistantResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, assistantResponse.StatusCode);
+        Assert.Contains("AI Ticket Assistant", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("VPN connection is failing", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Check IP connectivity, DNS resolution, VPN status, and whether other users are affected.", html, StringComparison.OrdinalIgnoreCase);
+    }
+
     private HttpClient CreateAuthenticatedClient(string userId, string roles)
     {
         var client = _factory.CreateClient(new WebApplicationFactoryClientOptions

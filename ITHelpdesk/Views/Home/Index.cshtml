@@ -1,4 +1,5 @@
-﻿@{
+﻿@model HomeIndexViewModel
+@{
     ViewData["Title"] = "IT Helpdesk";
 }
 
@@ -9,6 +10,85 @@
             Submit IT issues, attach screenshots, track resolution status, and collaborate with technicians.
             Staff members can triage, assign, and resolve tickets in one workflow.
         </p>
-        <a class="btn btn-primary btn-lg" asp-controller="Tickets" asp-action="Index">Go to Tickets</a>
+        <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-primary btn-lg" asp-controller="Tickets" asp-action="Index">Go to Tickets</a>
+            @if (!Model.IsAuthenticated)
+            {
+                <a class="btn btn-outline-secondary btn-lg" asp-area="Identity" asp-page="/Account/Login">Sign in to use the assistant</a>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 align-items-start">
+    <div class="col-12 col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4">AI Ticket Assistant</h2>
+                <p class="text-muted mb-3">
+                    Pick a ticket and get structured troubleshooting steps plus a suggested response you can send to the user.
+                </p>
+
+                @if (!Model.IsAuthenticated)
+                {
+                    <div class="alert alert-info mb-0">
+                        Sign in first to use the assistant with your accessible tickets.
+                    </div>
+                }
+                else if (!Model.AvailableTickets.Any())
+                {
+                    <div class="alert alert-info mb-0">
+                        No tickets are available for the assistant yet.
+                    </div>
+                }
+                else
+                {
+                    <form asp-action="AskAssistant" method="post">
+                        <div class="mb-3">
+                            <label class="form-label" for="ticketId">Choose Ticket</label>
+                            <select class="form-select" id="ticketId" name="ticketId" required>
+                                <option value="">Select a ticket</option>
+                                @foreach (var ticket in Model.AvailableTickets)
+                                {
+                                    var selected = Model.SelectedTicketId == ticket.Id;
+                                    if (selected)
+                                    {
+                                        <option value="@ticket.Id" selected>#@ticket.Id - @ticket.Title (@ticket.StatusName, @ticket.Priority)</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@ticket.Id">#@ticket.Id - @ticket.Title (@ticket.StatusName, @ticket.Priority)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Get Guidance</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4">Assistant Response</h2>
+
+                @if (string.IsNullOrWhiteSpace(Model.AssistantResponse))
+                {
+                    <p class="text-muted mb-0">
+                        Select a ticket to generate guidance.
+                    </p>
+                }
+                else
+                {
+                    <div class="mb-3">
+                        <div class="small text-muted">Selected ticket</div>
+                        <div class="fw-semibold">@Model.SelectedTicketTitle</div>
+                    </div>
+                    <pre class="bg-light border rounded p-3 mb-0" style="white-space: pre-wrap; font-family: inherit;">@Model.AssistantResponse</pre>
+                }
+            </div>
+        </div>
     </div>
 </div>
