@@ -1,0 +1,52 @@
+@model TicketCreateViewModel
+@{
+    ViewData["Title"] = "Submit Ticket";
+}
+
+<h1 class="h3 mb-3">Submit IT Support Ticket</h1>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="card p-3 p-md-4 shadow-sm">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" placeholder="Short issue summary" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="6" placeholder="Describe the issue, steps, and impact"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12 col-md-6">
+            <label asp-for="Priority" class="form-label"></label>
+            <select asp-for="Priority" asp-items="Html.GetEnumSelectList<TicketPriority>()" class="form-select"></select>
+            <span asp-validation-for="Priority" class="text-danger"></span>
+        </div>
+        <div class="col-12 col-md-6">
+            <label asp-for="DueAtUtc" class="form-label"></label>
+            <input asp-for="DueAtUtc" type="datetime-local" class="form-control" />
+            <div class="form-text">Optional target completion date in your local timezone.</div>
+            <span asp-validation-for="DueAtUtc" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Screenshot" class="form-label">Screenshot (optional)</label>
+        <input asp-for="Screenshot" class="form-control" type="file" accept="image/*" />
+        <div class="form-text">Allowed: png, jpg, jpeg, webp, gif. Max size: 5 MB.</div>
+        <span asp-validation-for="Screenshot" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Create Ticket</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
