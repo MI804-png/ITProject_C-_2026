@@ -1,8 +1,10 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITHelpdesk", "ITHelpdesk\ITHelpdesk.csproj", "{1E0A6599-C97B-4CC6-1938-2CCBA0B89588}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITHelpdesk.Tests", "ITHelpdesk.Tests\ITHelpdesk.Tests.csproj", "{48ADEB47-CDFA-4715-BC4D-49E0648AC796}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,6 +16,10 @@ Global
 		{1E0A6599-C97B-4CC6-1938-2CCBA0B89588}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E0A6599-C97B-4CC6-1938-2CCBA0B89588}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E0A6599-C97B-4CC6-1938-2CCBA0B89588}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48ADEB47-CDFA-4715-BC4D-49E0648AC796}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48ADEB47-CDFA-4715-BC4D-49E0648AC796}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48ADEB47-CDFA-4715-BC4D-49E0648AC796}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48ADEB47-CDFA-4715-BC4D-49E0648AC796}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

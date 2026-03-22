@@ -26,7 +26,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             entity.Property(x => x.Title).HasMaxLength(120).IsRequired();
             entity.Property(x => x.Description).HasMaxLength(2000).IsRequired();
             entity.Property(x => x.ScreenshotPath).HasMaxLength(260);
-            entity.Property(x => x.Priority).HasDefaultValue(TicketPriority.Normal).IsRequired();
+            entity.Property(x => x.Priority).IsRequired();
 
             entity.HasIndex(x => x.AssignedToUserId);
             entity.HasIndex(x => new { x.TicketStatusId, x.Priority, x.CreatedAtUtc });
